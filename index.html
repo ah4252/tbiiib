@@ -1,0 +1,1699 @@
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة معدلات طلاب الطب - نظام 20 نقطة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            /* Light mode colors */
+            --primary: #1e3a8a;
+            --primary-dark: #1e40af;
+            --secondary: #0ea5e9;
+            --accent: #8b5cf6;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --border: #cbd5e1;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --header-bg: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            --body-bg: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .dark-mode {
+            /* Dark mode colors */
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --secondary: #93c5fd;
+            --accent: #a78bfa;
+            --light: #0f172a;
+            --dark: #f1f5f9;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --gray: #94a3b8;
+            --light-gray: #334155;
+            --border: #475569;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --header-bg: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+            --body-bg: linear-gradient(135deg, #0f172a, #1e293b);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: var(--body-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 15px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        .dark-mode .theme-toggle {
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(20deg);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .dark-mode .theme-toggle:hover {
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 16px;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: var(--header-bg);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--card-shadow);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        .card-header {
+            background: var(--header-bg);
+            color: white;
+            padding: 16px 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 160px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-width: 140px;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(30, 58, 138, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #0284c7);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #7c3aed);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-block {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .subjects-list {
+            margin-top: 25px;
+        }
+
+        .subjects-header, .subject-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-align: center;
+            align-items: center;
+        }
+
+        .subjects-header {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .subject-item {
+            border: 1px solid var(--border);
+            transition: background 0.2s ease;
+        }
+
+        .subject-item:hover {
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .subject-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .grade-display {
+            font-weight: 700;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .coefficient-display, .weighted-display {
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .grade-excellent { color: var(--success); }
+        .grade-good { color: #3b82f6; }
+        .grade-fair { color: var(--warning); }
+        .grade-pass { color: #f97316; }
+        .grade-fail { color: var(--danger); }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            transform: scale(1.1);
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 25px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border-top: 3px solid var(--primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+        }
+
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .result-title {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .moy-excellent { color: var(--success); }
+        .moy-good { color: #3b82f6; }
+        .moy-fair { color: var(--warning); }
+        .moy-pass { color: #f97316; }
+        .moy-fail { color: var(--danger); }
+
+        .moy-description {
+            margin-top: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--text-primary);
+        }
+
+        .grade-scale {
+            margin-top: 30px;
+        }
+
+        .scale-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .scale-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .scale-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .scale-item {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .scale-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--secondary);
+        }
+
+        .scale-grade {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .scale-excellent { color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        .scale-good { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        .scale-fair { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
+        .scale-pass { color: #f97316; background: rgba(249, 115, 22, 0.1); }
+        .scale-fail { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+
+        .scale-range {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 15px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--gray);
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .system-info {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.05), rgba(14, 165, 233, 0.05));
+            border-radius: 14px;
+            padding: 18px;
+            margin: 20px 0;
+            border-left: 3px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark-mode .system-info {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.15), rgba(14, 165, 233, 0.1));
+        }
+
+        .system-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 100%;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.05;
+        }
+
+        .system-info h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+        }
+
+        .system-info p {
+            line-height: 1.6;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(14, 165, 233, 0.2), transparent);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .dark-mode .highlight {
+            background: linear-gradient(120deg, rgba(96, 165, 250, 0.3), transparent);
+            color: var(--secondary);
+        }
+
+        /* Animation for result value */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-result {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        /* Responsive adjustments for mobile */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .subjects-header, .subject-item {
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas: 
+                    "name grade"
+                    "coefficient weighted"
+                    "remove remove";
+                gap: 8px;
+            }
+            
+            .subject-item > :nth-child(1) { grid-area: name; text-align: right; }
+            .subject-item > :nth-child(2) { grid-area: grade; text-align: left; padding-right: 8px; }
+            .subject-item > :nth-child(3) { grid-area: coefficient; text-align: left; padding-right: 8px; }
+            .subject-item > :nth-child(4) { grid-area: weighted; text-align: left; padding-right: 8px; }
+            .subject-item > :nth-child(5) { grid-area: remove; justify-self: end; }
+            
+            .subject-name, .grade-display, .coefficient-display, .weighted-display {
+                font-size: 0.85rem;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .result-value {
+                font-size: 1.8rem;
+            }
+            
+            .theme-toggle {
+                top: 12px;
+                left: 12px;
+                width: 36px;
+                height: 36px;
+            }
+            
+            .tabs {
+                gap: 8px;
+            }
+            
+            .tab-btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+                min-width: 100px;
+            }
+            
+            .card-header {
+                padding: 14px 16px;
+                font-size: 1.1rem;
+            }
+            
+            .card-body {
+                padding: 16px;
+            }
+            
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.95rem;
+                min-width: 120px;
+            }
+            
+            .results-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .scale-grid {
+                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            }
+            
+            .scale-grade {
+                font-size: 1.3rem;
+            }
+            
+            .footer {
+                padding: 20px 10px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 15px 10px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            h1::after {
+                width: 50px;
+                height: 2px;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+                max-width: 100%;
+            }
+            
+            .logo i {
+                font-size: 1.6rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+            
+            .subjects-header, .subject-item {
+                padding: 10px;
+                gap: 6px;
+            }
+            
+            .result-card {
+                padding: 16px;
+            }
+            
+            .result-value {
+                font-size: 1.6rem;
+            }
+            
+            .result-title {
+                font-size: 0.95rem;
+            }
+            
+            .moy-description {
+                font-size: 0.95rem;
+                padding: 5px 10px;
+            }
+            
+            .scale-item {
+                padding: 16px 12px;
+            }
+            
+            .scale-grade {
+                font-size: 1.2rem;
+                padding: 6px;
+            }
+            
+            .scale-range {
+                font-size: 0.95rem;
+            }
+            
+            .system-info {
+                padding: 14px;
+            }
+            
+            .footer {
+                padding: 18px 8px;
+            }
+        }
+
+        /* Points input styling for mobile */
+        .points-input {
+            width: 100% !important;
+            padding: 8px 10px !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 6px !important;
+            background: var(--card-bg) !important;
+            color: var(--text-primary) !important;
+            font-size: 0.9rem !important;
+            text-align: center;
+        }
+
+        /* Ensure touch targets are large enough on mobile */
+        @media (max-width: 768px) {
+            .btn, .tab-btn, .remove-btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .points-input {
+                min-height: 44px;
+                font-size: 1.1rem; /* Prevent zoom on iOS */
+            }
+        }
+        
+        /* Error state for incomplete fields */
+        .points-input.error {
+            border-color: var(--danger) !important;
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </div>
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>حاسبة معدلات طلاب الطب</h1>
+            </div>
+            <p class="subtitle">أداة متكاملة لحساب المعدل الفصلي لطلاب كليات الطب بنظام الـ20 نقطة والمعاملات</p>
+        </header>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="s1">
+                <i class="fas fa-book"></i> السنة الأولى - الفصل الأول (S1)
+            </button>
+            <button class="tab-btn" data-tab="s2">
+                <i class="fas fa-book"></i> السنة الأولى - الفصل الثاني (S2)
+            </button>
+            <button class="tab-btn" data-tab="year2">
+                <i class="fas fa-graduation-cap"></i> سنة ثانية طب
+            </button>
+            <button class="tab-btn" data-tab="year3">
+                <i class="fas fa-graduation-cap"></i> سنة ثالثة طب
+            </button>
+        </div>
+
+        <!-- S1 Tab Content -->
+        <div id="s1" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-list"></i> المواد الدراسية - الفصل الأول (S1)
+                </div>
+                <div class="card-body">
+                    <div class="system-info">
+                        <h3><i class="fas fa-calculator"></i> طريقة الحساب</h3>
+                        <p>المعدل = مجموع (<span class="highlight">النقاط × المعامل</span>) ÷ مجموع (<span class="highlight">المعاملات</span>)<br>
+                        <span class="highlight">المعدل يظهر مباشرة على مقياس 20 نقطة (مثل: 15.77 أو 12.50)</span></p>
+                    </div>
+                    
+                    <div class="subjects-list">
+                        <div class="subjects-header">
+                            <div>اسم المادة</div>
+                            <div>النقاط (0-20)</div>
+                            <div>المعامل</div>
+                            <div>الناتج</div>
+                            <div></div>
+                        </div>
+                        <div id="subjectsContainerS1">
+                            <!-- Predefined subjects for S1 will be loaded by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 20px; justify-content: center; gap: 12px;">
+                        <button id="calculateBtnS1" class="btn btn-accent">
+                            <i class="fas fa-calculator"></i> حساب المعدل
+                        </button>
+                        <button id="resetBtnS1" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> إعادة تعيين
+                        </button>
+                    </div>
+
+                    <div class="card" id="resultsCardS1" style="display: none; margin-top: 20px;">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i> نتائج الحساب - الفصل الأول (S1)
+                        </div>
+                        <div class="card-body">
+                            <div class="results-section">
+                                <div class="result-card">
+                                    <div class="result-title">المعدل الفصلي</div>
+                                    <div id="semesterMoyS1" class="result-value">0.00</div>
+                                    <div id="moyDescriptionS1" class="moy-description"></div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-title">مجموع النواتج</div>
+                                    <div id="totalWeightedS1" class="result-value" style="font-size: 1.8rem;">0.00</div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-title">مجموع المعاملات</div>
+                                    <div id="totalCoefficientsS1" class="result-value" style="font-size: 1.8rem;">0.0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- S2 Tab Content -->
+        <div id="s2" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-list"></i> المواد الدراسية - الفصل الثاني (S2)
+                </div>
+                <div class="card-body">
+                    <div class="system-info">
+                        <h3><i class="fas fa-calculator"></i> طريقة الحساب</h3>
+                        <p>المعدل = مجموع (<span class="highlight">النقاط × المعامل</span>) ÷ مجموع (<span class="highlight">المعاملات</span>)<br>
+                        <span class="highlight">المعدل يظهر مباشرة على مقياس 20 نقطة (مثل: 15.77 أو 12.50)</span></p>
+                    </div>
+                    
+                    <div class="subjects-list">
+                        <div class="subjects-header">
+                            <div>اسم المادة</div>
+                            <div>النقاط (0-20)</div>
+                            <div>المعامل</div>
+                            <div>الناتج</div>
+                            <div></div>
+                        </div>
+                        <div id="subjectsContainerS2">
+                            <!-- Predefined subjects for S2 will be loaded by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 20px; justify-content: center; gap: 12px;">
+                        <button id="calculateBtnS2" class="btn btn-accent">
+                            <i class="fas fa-calculator"></i> حساب المعدل
+                        </button>
+                        <button id="resetBtnS2" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> إعادة تعيين
+                        </button>
+                    </div>
+
+                    <div class="card" id="resultsCardS2" style="display: none; margin-top: 20px;">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i> نتائج الحساب - الفصل الثاني (S2)
+                        </div>
+                        <div class="card-body">
+                            <div class="results-section">
+                                <div class="result-card">
+                                    <div class="result-title">المعدل الفصلي</div>
+                                    <div id="semesterMoyS2" class="result-value">0.00</div>
+                                    <div id="moyDescriptionS2" class="moy-description"></div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-title">مجموع النواتج</div>
+                                    <div id="totalWeightedS2" class="result-value" style="font-size: 1.8rem;">0.00</div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-title">مجموع المعاملات</div>
+                                    <div id="totalCoefficientsS2" class="result-value" style="font-size: 1.8rem;">0.0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Year 2 Tab Content -->
+        <div id="year2" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-list"></i> المواد الدراسية - السنة الثانية
+                </div>
+                <div class="card-body">
+                    <div class="system-info">
+                        <h3><i class="fas fa-calculator"></i> طريقة الحساب</h3>
+                        <p>المعدل = مجموع (<span class="highlight">النقاط × المعامل</span>) ÷ مجموع (<span class="highlight">المعاملات</span>)<br>
+                        <span class="highlight">المعدل يظهر مباشرة على مقياس 20 نقطة (مثل: 15.77 أو 12.50)</span></p>
+                    </div>
+                    
+                    <div class="subjects-list">
+                        <div class="subjects-header">
+                            <div>اسم المادة</div>
+                            <div>النقاط (0-20)</div>
+                            <div>المعامل</div>
+                            <div>الناتج</div>
+                            <div></div>
+                        </div>
+                        <div id="subjectsContainerYear2">
+                            <!-- Predefined subjects for Year 2 will be loaded by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 20px; justify-content: center; gap: 12px;">
+                        <button id="calculateBtnYear2" class="btn btn-accent">
+                            <i class="fas fa-calculator"></i> حساب المعدل
+                        </button>
+                        <button id="resetBtnYear2" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> إعادة تعيين
+                        </button>
+                    </div>
+
+                    <div class="card" id="resultsCardYear2" style="display: none; margin-top: 20px;">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i> نتائج الحساب - السنة الثانية
+                        </div>
+                        <div class="card-body">
+                            <div class="results-section">
+                                <div class="result-card">
+                                    <div class="result-title">المعدل الفصلي</div>
+                                    <div id="semesterMoyYear2" class="result-value">0.00</div>
+                                    <div id="moyDescriptionYear2" class="moy-description"></div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-title">مجموع النواتج</div>
+                                    <div id="totalWeightedYear2" class="result-value" style="font-size: 1.8rem;">0.00</div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-title">مجموع المعاملات</div>
+                                    <div id="totalCoefficientsYear2" class="result-value" style="font-size: 1.8rem;">0.0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Year 3 Tab Content -->
+        <div id="year3" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-plus-circle"></i> إضافة مادة دراسية - السنة الثالثة
+                </div>
+                <div class="card-body">
+                    <div class="system-info">
+                        <h3><i class="fas fa-calculator"></i> طريقة الحساب</h3>
+                        <p>المعدل = مجموع (<span class="highlight">النقاط × المعامل</span>) ÷ مجموع (<span class="highlight">المعاملات</span>)<br>
+                        <span class="highlight">المعدل يظهر مباشرة على مقياس 20 نقطة (مثل: 15.77 أو 12.50)</span></p>
+                    </div>
+                    
+                    <div class="input-section">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="subjectName3">اسم المادة</label>
+                                <input type="text" id="subjectName3" placeholder="أدخل اسم المادة">
+                            </div>
+                            <div class="form-group">
+                                <label for="points3">النقاط (0-20)</label>
+                                <input type="number" id="points3" min="0" max="20" step="0.01" placeholder="أدخل النقاط">
+                            </div>
+                            <div class="form-group">
+                                <label for="coefficient3">المعامل</label>
+                                <input type="number" id="coefficient3" min="0.5" max="10" step="0.5" value="3" placeholder="قيمة المعامل">
+                            </div>
+                        </div>
+                        <button id="addSubject3" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> إضافة المادة
+                        </button>
+                    </div>
+
+                    <div class="subjects-list">
+                        <div class="subjects-header">
+                            <div>اسم المادة</div>
+                            <div>النقاط</div>
+                            <div>المعامل</div>
+                            <div>الناتج</div>
+                            <div>حذف</div>
+                        </div>
+                        <div id="subjectsContainer3">
+                            <div class="empty-state">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h3>لا توجد مواد مضافة بعد</h3>
+                                <p>أضف المواد الدراسية لحساب المعدل</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 20px; justify-content: center; gap: 12px;">
+                        <button id="calculateBtn3" class="btn btn-accent">
+                            <i class="fas fa-calculator"></i> حساب المعدل
+                        </button>
+                        <button id="resetBtn3" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> إعادة تعيين
+                        </button>
+                    </div>
+
+                    <div class="card" id="resultsCard3" style="display: none; margin-top: 20px;">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i> نتائج الحساب - السنة الثالثة
+                        </div>
+                        <div class="card-body">
+                            <div class="results-section">
+                                <div class="result-card">
+                                    <div class="result-title">المعدل الفصلي</div>
+                                    <div id="semesterMoy3" class="result-value">0.00</div>
+                                    <div id="moyDescription3" class="moy-description"></div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-title">مجموع النواتج</div>
+                                    <div id="totalWeighted3" class="result-value" style="font-size: 1.8rem;">0.00</div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-title">مجموع المعاملات</div>
+                                    <div id="totalCoefficients3" class="result-value" style="font-size: 1.8rem;">0.0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-graduation-cap"></i> مقياس التقديرات (نظام 20 نقطة)
+            </div>
+            <div class="card-body">
+                <div class="scale-header">
+                    <h3>نظام التقديرات المستخدم في كليات الطب العربية</h3>
+                    <p>يتم تصنيف المعدل وفقاً للمقياس التالي</p>
+                </div>
+                <div class="scale-grid">
+                    <div class="scale-item">
+                        <div class="scale-grade scale-excellent">ممتاز</div>
+                        <div class="scale-range">16.00 - 20.00</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="scale-grade scale-good">جيد جداً</div>
+                        <div class="scale-range">14.00 - 15.99</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="scale-grade scale-fair">جيد</div>
+                        <div class="scale-range">12.00 - 13.99</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="scale-grade scale-pass">مقبول</div>
+                        <div class="scale-range">10.00 - 11.99</div>
+                    </div>
+                    <div class="scale-item">
+                        <div class="scale-grade scale-fail">راسب</div>
+                        <div class="scale-range">أقل من 10.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><i class="fas fa-heartbeat" style="color: var(--primary); margin-left: 5px;"></i> حاسبة معدلات طلاب الطب &copy; 2025</p>
+            <p style="margin-top: 8px; font-size: 0.85rem;">أداة تعليمية لمساعدة الطلاب في تتبع تقدمهم الأكاديمي</p>
+            <p style="margin-top: 6px; font-size: 0.8rem; color: var(--gray);">تم تصميم هذا الموقع ليتوافق مع أنظمة التقييم في كليات الطب العربية بنظام الـ20 نقطة</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.body.classList.add('dark-mode');
+                themeIcon.className = 'fas fa-sun';
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    themeIcon.className = 'fas fa-sun';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    themeIcon.className = 'fas fa-moon';
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+            
+            // Tab navigation
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Predefined subjects for S1, S2, and Year 2
+            const subjectsS1 = [
+                { name: "biochimie", coefficient: 2 },
+                { name: "anatomie", coefficient: 2 },
+                { name: "chimie", coefficient: 2 },
+                { name: "biophysique", coefficient: 2 },
+                { name: "cytologie", coefficient: 2 },
+                { name: "biostatistique", coefficient: 2 },
+                { name: "SSH", coefficient: 1 },
+                { name: "embryologie", coefficient: 1 }
+            ];
+            
+            const subjectsS2 = [
+                { name: "biochimie", coefficient: 2 },
+                { name: "anatomie", coefficient: 2 },
+                { name: "chimie", coefficient: 2 },
+                { name: "biophysique", coefficient: 2 },
+                { name: "cytologie", coefficient: 2 },
+                { name: "biostatistique", coefficient: 2 },
+                { name: "physiologie", coefficient: 1 },
+                { name: "histologie", coefficient: 1 }
+            ];
+            
+            const subjectsYear2 = [
+                { name: "Cardiovasculaire", coefficient: 4 },
+                { name: "Nerveux", coefficient: 4 },
+                { name: "Digestif", coefficient: 4 },
+                { name: "Endocrineien", coefficient: 4 },
+                { name: "Urinaire", coefficient: 4 },
+                { name: "Genetique", coefficient: 2 },
+                { name: "Immunologie", coefficient: 2 }
+            ];
+            
+            // Subjects array for Year 3
+            let subjects3 = [];
+            
+            // Initialize all sections with predefined subjects
+            initPredefinedSubjects('S1', subjectsS1);
+            initPredefinedSubjects('S2', subjectsS2);
+            initPredefinedSubjects('Year2', subjectsYear2);
+            
+            // Initialize Year 3 section
+            initSection('3', subjects3);
+            
+            // Initialize calculation and reset buttons for predefined sections
+            document.getElementById('calculateBtnS1').addEventListener('click', () => calculateMoyPredefined('S1', subjectsS1));
+            document.getElementById('resetBtnS1').addEventListener('click', () => resetPredefined('S1'));
+            document.getElementById('calculateBtnS2').addEventListener('click', () => calculateMoyPredefined('S2', subjectsS2));
+            document.getElementById('resetBtnS2').addEventListener('click', () => resetPredefined('S2'));
+            document.getElementById('calculateBtnYear2').addEventListener('click', () => calculateMoyPredefined('Year2', subjectsYear2));
+            document.getElementById('resetBtnYear2').addEventListener('click', () => resetPredefined('Year2'));
+            
+            // Allow Enter key to add subject for Year 3
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const activeInput = document.activeElement;
+                    if (activeInput.id.includes('subjectName') || activeInput.id.includes('points') || activeInput.id.includes('coefficient')) {
+                        if (activeInput.id.includes('3')) {
+                            addSubject('3');
+                        }
+                    }
+                }
+            });
+            
+            // Initialize predefined subjects for sections
+            function initPredefinedSubjects(sectionId, subjectsArray) {
+                const containerId = sectionId === 'Year2' ? 'subjectsContainerYear2' : `subjectsContainer${sectionId}`;
+                const container = document.getElementById(containerId);
+                let html = '';
+                
+                subjectsArray.forEach((subject, index) => {
+                    html += `
+                        <div class="subject-item">
+                            <div class="subject-name">${subject.name}</div>
+                            <div class="grade-display">
+                                <input type="number" class="points-input" id="points${sectionId}${index}" min="0" max="20" step="0.01" placeholder="النقاط" style="text-align: center;">
+                            </div>
+                            <div class="coefficient-display">${subject.coefficient.toFixed(1)}</div>
+                            <div class="weighted-display" id="weighted${sectionId}${index}">0.00</div>
+                            <div></div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            }
+            
+            // Calculate Moy for predefined sections - WITH VALIDATION
+            function calculateMoyPredefined(sectionId, subjectsArray) {
+                let totalWeightedValue = 0;
+                let totalCoefficientsValue = 0;
+                let hasValidInput = true;
+                let emptyFields = 0;
+                
+                // Reset error states
+                for (let i = 0; i < subjectsArray.length; i++) {
+                    const pointsInput = document.getElementById(`points${sectionId}${i}`);
+                    pointsInput.classList.remove('error');
+                }
+                
+                // Check all fields are filled
+                for (let i = 0; i < subjectsArray.length; i++) {
+                    const pointsInput = document.getElementById(`points${sectionId}${i}`);
+                    const points = parseFloat(pointsInput.value);
+                    
+                    if (pointsInput.value.trim() === '' || isNaN(points) || points < 0 || points > 20) {
+                        pointsInput.classList.add('error');
+                        hasValidInput = false;
+                        emptyFields++;
+                    }
+                }
+                
+                if (!hasValidInput) {
+                    showToast(`يرجى تعبئة جميع الحقول (${emptyFields} حقول فارغة أو غير صالحة)`, 'error');
+                    return;
+                }
+                
+                // Calculate values
+                for (let i = 0; i < subjectsArray.length; i++) {
+                    const pointsInput = document.getElementById(`points${sectionId}${i}`);
+                    const points = parseFloat(pointsInput.value);
+                    const coefficient = subjectsArray[i].coefficient;
+                    const weighted = points * coefficient;
+                    
+                    document.getElementById(`weighted${sectionId}${i}`).textContent = weighted.toFixed(2);
+                    totalWeightedValue += weighted;
+                    totalCoefficientsValue += coefficient;
+                }
+                
+                // Calculate average on 20 scale: Total Weighted / Total Coefficients
+                const moy = totalWeightedValue / totalCoefficientsValue;
+                const moyRounded = Math.round(moy * 100) / 100; // Round to 2 decimal places
+                const description = getMoyDescription(moyRounded);
+                const moyClass = getMoyClass(moyRounded);
+                
+                // Update results with animation
+                const resultValueId = sectionId === 'Year2' ? 'semesterMoyYear2' : `semesterMoy${sectionId}`;
+                const descriptionId = sectionId === 'Year2' ? 'moyDescriptionYear2' : `moyDescription${sectionId}`;
+                const totalWeightedId = sectionId === 'Year2' ? 'totalWeightedYear2' : `totalWeighted${sectionId}`;
+                const totalCoefficientsId = sectionId === 'Year2' ? 'totalCoefficientsYear2' : `totalCoefficients${sectionId}`;
+                const resultsCardId = sectionId === 'Year2' ? 'resultsCardYear2' : `resultsCard${sectionId}`;
+                
+                document.getElementById(resultValueId).textContent = moyRounded.toFixed(2);
+                document.getElementById(resultValueId).className = `result-value ${moyClass} animate-result`;
+                document.getElementById(descriptionId).textContent = description;
+                document.getElementById(totalWeightedId).textContent = totalWeightedValue.toFixed(2);
+                document.getElementById(totalCoefficientsId).textContent = totalCoefficientsValue.toFixed(1);
+                
+                // Show results card
+                document.getElementById(resultsCardId).style.display = 'block';
+                
+                // Scroll to results
+                document.getElementById(resultsCardId).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                showToast(`تم حساب المعدل بنجاح: ${moyRounded.toFixed(2)}/20`, 'success');
+            }
+            
+            // Reset predefined sections
+            function resetPredefined(sectionId) {
+                let subjectsArray;
+                if (sectionId === 'S1') subjectsArray = subjectsS1;
+                else if (sectionId === 'S2') subjectsArray = subjectsS2;
+                else subjectsArray = subjectsYear2;
+                
+                for (let i = 0; i < subjectsArray.length; i++) {
+                    const pointsInput = document.getElementById(`points${sectionId}${i}`);
+                    pointsInput.value = '';
+                    pointsInput.classList.remove('error');
+                    document.getElementById(`weighted${sectionId}${i}`).textContent = '0.00';
+                }
+                
+                // Hide results
+                const resultsCardId = sectionId === 'Year2' ? 'resultsCardYear2' : `resultsCard${sectionId}`;
+                document.getElementById(resultsCardId).style.display = 'none';
+                
+                showToast('تمت إعادة تعيين بيانات هذه الفترة', 'info');
+            }
+            
+            // Initialize section for Year 3
+            function initSection(sectionId, subjectsArray) {
+                const addBtn = document.getElementById(`addSubject${sectionId}`);
+                const calculateBtn = document.getElementById(`calculateBtn${sectionId}`);
+                const resetBtn = document.getElementById(`resetBtn${sectionId}`);
+                
+                if (addBtn) addBtn.addEventListener('click', () => addSubject(sectionId));
+                if (calculateBtn) calculateBtn.addEventListener('click', () => calculateMoy(sectionId, subjectsArray));
+                if (resetBtn) resetBtn.addEventListener('click', () => resetSection(sectionId, subjectsArray));
+            }
+            
+            // Add subject function for Year 3
+            function addSubject(sectionId) {
+                const name = document.getElementById(`subjectName${sectionId}`).value.trim();
+                const points = parseFloat(document.getElementById(`points${sectionId}`).value);
+                const coefficient = parseFloat(document.getElementById(`coefficient${sectionId}`).value);
+                
+                // Validation
+                if (!name) {
+                    showToast('يرجى إدخال اسم المادة', 'error');
+                    document.getElementById(`subjectName${sectionId}`).focus();
+                    return;
+                }
+                
+                if (isNaN(points) || points < 0 || points > 20) {
+                    showToast('يرجى إدخال نقاط صحيحة بين 0 و 20', 'error');
+                    document.getElementById(`points${sectionId}`).focus();
+                    return;
+                }
+                
+                if (isNaN(coefficient) || coefficient < 0.5 || coefficient > 10) {
+                    showToast('يرجى إدخال معامل صحيح (0.5 - 10)', 'error');
+                    document.getElementById(`coefficient${sectionId}`).focus();
+                    return;
+                }
+                
+                // Calculate weighted points (points * coefficient)
+                const weighted = points * coefficient;
+                
+                // Add to subjects array
+                subjects3.push({
+                    name: name,
+                    points: points,
+                    coefficient: coefficient,
+                    weighted: weighted
+                });
+                
+                // Update UI
+                renderSubjects(sectionId, subjects3);
+                
+                // Clear inputs
+                document.getElementById(`subjectName${sectionId}`).value = '';
+                document.getElementById(`points${sectionId}`).value = '';
+                document.getElementById(`coefficient${sectionId}`).value = '3';
+                document.getElementById(`subjectName${sectionId}`).focus();
+                
+                showToast('تمت إضافة المادة بنجاح', 'success');
+            }
+            
+            // Render subjects list for Year 3
+            function renderSubjects(sectionId, subjects) {
+                const container = document.getElementById(`subjectsContainer${sectionId}`);
+                
+                if (subjects.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h3>لا توجد مواد مضافة بعد</h3>
+                            <p>أضف المواد الدراسية لحساب المعدل</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                subjects.forEach((subject, index) => {
+                    const gradeClass = getGradeClass(subject.points);
+                    const gradeDescription = getGradeDescription(subject.points);
+                    
+                    html += `
+                        <div class="subject-item">
+                            <div class="subject-name">${subject.name}</div>
+                            <div class="grade-display ${gradeClass}">${subject.points.toFixed(2)} <small>(${gradeDescription})</small></div>
+                            <div class="coefficient-display">${subject.coefficient.toFixed(1)}</div>
+                            <div class="weighted-display">${subject.weighted.toFixed(2)}</div>
+                            <button class="remove-btn" onclick="removeSubject('${sectionId}', ${index})" title="حذف المادة">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            }
+            
+            // Calculate Moy for Year 3 - WITH VALIDATION
+            function calculateMoy(sectionId, subjects) {
+                if (subjects.length === 0) {
+                    showToast('يرجى إضافة مواد دراسية أولاً', 'error');
+                    return;
+                }
+                
+                // Check if all subjects have valid points
+                let hasValidInput = true;
+                for (let i = 0; i < subjects.length; i++) {
+                    if (isNaN(subjects[i].points) || subjects[i].points < 0 || subjects[i].points > 20) {
+                        hasValidInput = false;
+                        break;
+                    }
+                }
+                
+                if (!hasValidInput) {
+                    showToast('يرجى التأكد من إدخال نقاط صحيحة لجميع المواد', 'error');
+                    return;
+                }
+                
+                let totalWeightedValue = 0;
+                let totalCoefficientsValue = 0;
+                
+                subjects.forEach(subject => {
+                    totalWeightedValue += subject.weighted;
+                    totalCoefficientsValue += subject.coefficient;
+                });
+                
+                // Calculate average on 20 scale: Total Weighted / Total Coefficients
+                const moy = totalWeightedValue / totalCoefficientsValue;
+                const moyRounded = Math.round(moy * 100) / 100; // Round to 2 decimal places
+                const description = getMoyDescription(moyRounded);
+                const moyClass = getMoyClass(moyRounded);
+                
+                // Update results with animation
+                document.getElementById(`semesterMoy${sectionId}`).textContent = moyRounded.toFixed(2);
+                document.getElementById(`semesterMoy${sectionId}`).className = `result-value ${moyClass} animate-result`;
+                document.getElementById(`moyDescription${sectionId}`).textContent = description;
+                document.getElementById(`totalWeighted${sectionId}`).textContent = totalWeightedValue.toFixed(2);
+                document.getElementById(`totalCoefficients${sectionId}`).textContent = totalCoefficientsValue.toFixed(1);
+                
+                // Show results card
+                document.getElementById(`resultsCard${sectionId}`).style.display = 'block';
+                
+                // Scroll to results
+                document.getElementById(`resultsCard${sectionId}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                showToast(`تم حساب المعدل بنجاح: ${moyRounded.toFixed(2)}/20`, 'success');
+            }
+            
+            // Reset Year 3 section
+            function resetSection(sectionId, subjectsArray) {
+                if (subjectsArray.length > 0 && !confirm('هل أنت متأكد من إعادة تعيين جميع البيانات لهذه السنة؟')) {
+                    return;
+                }
+                
+                // Clear subjects array
+                subjectsArray.length = 0;
+                
+                // Re-render subjects list
+                renderSubjects(sectionId, subjectsArray);
+                
+                // Hide results
+                document.getElementById(`resultsCard${sectionId}`).style.display = 'none';
+                
+                // Clear inputs
+                document.getElementById(`subjectName${sectionId}`).value = '';
+                document.getElementById(`points${sectionId}`).value = '';
+                document.getElementById(`coefficient${sectionId}`).value = '3';
+                
+                document.getElementById(`subjectName${sectionId}`).focus();
+                
+                showToast('تمت إعادة تعيين بيانات هذه السنة', 'info');
+            }
+            
+            // Get grade description based on points
+            function getGradeDescription(points) {
+                if (points >= 16) return 'ممتاز';
+                if (points >= 14) return 'جيد جداً';
+                if (points >= 12) return 'جيد';
+                if (points >= 10) return 'مقبول';
+                return 'راسب';
+            }
+            
+            // Get grade class for styling
+            function getGradeClass(points) {
+                if (points >= 16) return 'grade-excellent';
+                if (points >= 14) return 'grade-good';
+                if (points >= 12) return 'grade-fair';
+                if (points >= 10) return 'grade-pass';
+                return 'grade-fail';
+            }
+            
+            // Get description for Moyenne
+            function getMoyDescription(moy) {
+                if (moy >= 16) return 'تقدير: ممتاز';
+                if (moy >= 14) return 'تقدير: جيد جداً';
+                if (moy >= 12) return 'تقدير: جيد';
+                if (moy >= 10) return 'تقدير: مقبول';
+                return 'تقدير: راسب';
+            }
+            
+            // Get Moyenne class for styling
+            function getMoyClass(moy) {
+                if (moy >= 16) return 'moy-excellent';
+                if (moy >= 14) return 'moy-good';
+                if (moy >= 12) return 'moy-fair';
+                if (moy >= 10) return 'moy-pass';
+                return 'moy-fail';
+            }
+            
+            // Remove subject (exposed globally for onclick) - Year 3 only
+            window.removeSubject = function(sectionId, index) {
+                if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
+                    const removedSubject = subjects3.splice(index, 1);
+                    renderSubjects(sectionId, subjects3);
+                    showToast(`تم حذف مادة "${removedSubject[0].name}"`, 'info');
+                }
+            };
+            
+            // Toast notification function
+            function showToast(message, type) {
+                // Remove existing toasts
+                const existingToast = document.querySelector('.toast');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+                
+                // Create toast element
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                toast.innerHTML = `
+                    <div class="toast-content">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                // Style the toast
+                const styles = `
+                    .toast {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 12px 20px;
+                        border-radius: 10px;
+                        color: white;
+                        font-weight: 500;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                        transform: translateX(120%);
+                        transition: transform 0.3s ease;
+                        z-index: 1000;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        font-size: 0.9rem;
+                    }
+                    .toast-content {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+                    .toast-success { background: linear-gradient(135deg, #10b981, #059669); }
+                    .toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+                    .toast-info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+                `;
+                
+                const styleSheet = document.createElement('style');
+                styleSheet.textContent = styles;
+                document.head.appendChild(styleSheet);
+                
+                document.body.appendChild(toast);
+                
+                // Show toast
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // Hide toast after 3 seconds
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        toast.remove();
+                        styleSheet.remove();
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Initialize focus on first input of S1
+            document.getElementById('pointsS10').focus();
+            
+            // Add subtle animation to header
+            const header = document.querySelector('header');
+            header.style.opacity = '0';
+            header.style.transform = 'translateY(-15px)';
+            setTimeout(() => {
+                header.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                header.style.opacity = '1';
+                header.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+
